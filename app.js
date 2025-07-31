@@ -6,13 +6,14 @@ const indexRouter = require("./routes/index");
 const app = express();
 
 require("dotenv").config();
+
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use("/api", indexRouter);
 
-const mongoURI = process.env.LOCAL_DB_ADDRESS;
+const mongoURI = process.env.MONGODB_URI_PROD;
 mongoose
   .connect(mongoURI, { useNewUrlParser: true })
   .then(() => console.log("mongoose connected"))
