@@ -16,7 +16,7 @@ const cartSchema = Schema(
   { timestamps: true }
 );
 
-CartSchema.methods.toJSON = function () {
+cartSchema.methods.toJSON = function () {
   const obj = this._doc;
   delete obj.__v;
   delete obj.updatedAt;

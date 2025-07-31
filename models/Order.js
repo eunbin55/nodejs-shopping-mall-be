@@ -13,7 +13,6 @@ const orderSchema = Schema(
         price: { type: Number, required: true },
       },
     ],
-    // 놓친것..
     shipTo: { type: Object, required: true },
     contact: { type: Object, required: true },
     status: { type: String, default: "preparing" },
@@ -22,7 +21,7 @@ const orderSchema = Schema(
   { timestamps: true }
 );
 
-OrderSchema.methods.toJSON = function () {
+orderSchema.methods.toJSON = function () {
   const obj = this._doc;
   delete obj.__v;
   delete obj.updatedAt;

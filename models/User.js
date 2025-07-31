@@ -10,8 +10,8 @@ const userSchema = Schema(
   },
   { timestamps: true }
 );
-// UserSchema의 데이터를 JSON으로 만들기 전에 delete 속성들을 빼고 obj로 리턴하겠다.
-UserSchema.methods.toJSON = function () {
+// userSchema의 데이터를 JSON으로 만들기 전에 delete 속성들을 빼고 obj로 리턴하겠다.
+userSchema.methods.toJSON = function () {
   const obj = this._doc;
   delete obj.password;
   delete obj.__v;
