@@ -8,7 +8,7 @@ userController.createUser = async (req, res) => {
     const { email, password, name, level } = req.body;
     const user = await User.findOne({ email });
     if (user) {
-      throw new Error("User already exist");
+      throw new Error("이미 가입된 이메일입니다.");
     }
     // 10정도의 복잡도를 가지고 salt 생성
     const salt = bcrypt.genSaltSync(10);
@@ -22,7 +22,7 @@ userController.createUser = async (req, res) => {
     await newUser.save();
     return res.status(200).json({ status: "success" });
   } catch (error) {
-    res.status(400).json({ status: "fail", error: error.message });
+    res.status(400).json({ status: "fail", message: error.message });
   }
 };
 
