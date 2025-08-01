@@ -8,7 +8,7 @@ userController.createUser = async (req, res) => {
     const { email, password, name, level } = req.body;
     const user = await User.findOne({ email });
     if (user) {
-      throw new Error("이미 가입된 이메일입니다.");
+      throw new Error("이미 가입된 사용자입니다.");
     }
     // 10정도의 복잡도를 가지고 salt 생성
     const salt = bcrypt.genSaltSync(10);
