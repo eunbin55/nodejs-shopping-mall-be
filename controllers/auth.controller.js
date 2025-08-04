@@ -5,6 +5,7 @@ require("dotenv").config();
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const authController = {};
 
+// 이메일 로그인
 authController.loginWithEmail = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -23,6 +24,7 @@ authController.loginWithEmail = async (req, res) => {
   }
 };
 
+// 토큰으로 유저 아이디 가져오기
 authController.authenticate = async (req, res, next) => {
   try {
     // 프론트에서 header에 세팅했으니까 header에서 가져옴
@@ -33,6 +35,18 @@ authController.authenticate = async (req, res, next) => {
       if (error) throw new Error("Invalid token");
       req.userId = payload._id;
     });
+    next();
+  } catch (error) {
+    res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+// 관리자 권한 확인
+authController.checkAdminPermission = async (req, res, next) => {
+  try {
+    const { userId } = req;
+    const user = await User.findById(userId);
+    if (user.level !== "admin") throw new Error("no permission");
     next();
   } catch (error) {
     res.status(400).json({ status: "fail", message: error.message });
