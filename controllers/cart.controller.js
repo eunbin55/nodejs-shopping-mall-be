@@ -1,4 +1,7 @@
+const { populate } = require("dotenv");
 const Cart = require("../models/Cart");
+const Product = require("../models/Product");
+const { model } = require("mongoose");
 
 const cartController = {};
 
@@ -28,6 +31,57 @@ cartController.addItemToCart = async (req, res) => {
     res
       .status(200)
       .json({ status: "success", data: cart, cartItemQty: cart.items.length });
+  } catch (error) {
+    res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+cartController.getCartItems = async (req, res) => {
+  try {
+    const { userId } = req;
+    const cart = await Cart.findOne({ userId }).populate({
+      path: "items",
+      populate: {
+        path: "productId",
+        model: "Product",
+      },
+    });
+    res.status(200).json({ status: "success", data: cart.items });
+  } catch (error) {
+    res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+cartController.deleteCartItem = async (req, res) => {
+  try {
+    const { userId } = req;
+    const itemId = req.params.id;
+
+    const item = await Cart.findOneAndUpdate(
+      { userId },
+      { $pull: { items: { _id: itemId } } },
+      { new: true }
+    );
+    res.status(200).json({ status: "success", data: item });
+  } catch (error) {
+    res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
+cartController.updateCartItemQty = async (req, res) => {
+  try {
+    const { userId } = req;
+    const itemId = req.params.id;
+    const { qty } = req.body;
+    const item = await Cart.findOneAndUpdate(
+      {
+        userId,
+        "items._id": itemId,
+      },
+      { $set: { "items.$.qty": qty } },
+      { new: true }
+    );
+    res.status(200).json({ status: "success", data: item });
   } catch (error) {
     res.status(400).json({ status: "fail", message: error.message });
   }
