@@ -87,4 +87,15 @@ cartController.updateCartItemQty = async (req, res) => {
   }
 };
 
+cartController.getCartItemsQty = async (req, res) => {
+  try {
+    const { userId } = req;
+    const cart = await Cart.findOne({ userId });
+    if (!cart) throw new Error("장바구니가 없습니다.");
+    res.status(200).json({ status: "success", qty: cart.items.length });
+  } catch (error) {
+    res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
 module.exports = cartController;

@@ -23,4 +23,7 @@ router.put(
   cartController.updateCartItemQty
 );
 
+// cart items qty 가져오기
+router.get("/qty", authController.authenticate, cartController.getCartItemsQty);
+
 module.exports = router;
