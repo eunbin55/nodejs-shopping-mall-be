@@ -117,4 +117,40 @@ productController.deleteProduct = async (req, res) => {
   }
 };
 
+// 아이템 재고 확인
+productController.checkStock = async (item) => {
+  const product = await Product.findById(item.productId);
+  // 재고 부족
+  if (product.stock[item.size] < item.qty) {
+    return {
+      isVerify: false,
+      message: `${product.name}의 '${item.size}'사이즈 재고가 부족합니다.`,
+    };
+  }
+  // 재고 충분
+  const newStock = { ...product.stock };
+  newStock[item.size] -= item.qty;
+  product.stock = newStock;
+
+  await product.save();
+  return { isVerify: true };
+};
+
+// 아이템리스트 전체 재고확인
+productController.checkItemListSock = async (itemList) => {
+  // 재고가 불충분한 아이템 저장
+  const insufficientStockItems = [];
+  await Promise.all(
+    itemList.map(async (item) => {
+      const stockCheck = await productController.checkStock(item);
+      if (!stockCheck.isVerify) {
+        insufficientStockItems.push({ item, message: stockCheck.message });
+      }
+      return stockCheck;
+    })
+  );
+
+  return insufficientStockItems;
+};
+
 module.exports = productController;
