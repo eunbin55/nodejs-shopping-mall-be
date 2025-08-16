@@ -103,4 +103,14 @@ orderController.updateOrderStatus = async (req, res) => {
   }
 };
 
+orderController.deleteOrder = async (req, res) => {
+  try {
+    const orderId = req.params.id;
+    await Order.findByIdAndDelete(orderId);
+    res.status(200).json({ status: "success" });
+  } catch (error) {
+    res.status(400).json({ status: "fail", message: error.message });
+  }
+};
+
 module.exports = orderController;

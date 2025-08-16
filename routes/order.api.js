@@ -24,4 +24,7 @@ router.put(
   orderController.updateOrderStatus
 );
 
+// 주문 삭제
+router.delete("/:id", authController.authenticate, orderController.deleteOrder);
+
 module.exports = router;

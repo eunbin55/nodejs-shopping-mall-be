@@ -39,10 +39,11 @@ productController.createProduct = async (req, res) => {
 
 productController.getProducts = async (req, res) => {
   try {
-    const { page, name } = req.query;
+    const { page, name, category } = req.query;
     const condition = {
       isDeleted: false,
       ...(name && { name: { $regex: name, $options: "i" } }),
+      ...(category && category !== "all" && { category: { $in: category } }),
     };
 
     let query = Product.find(condition);
